@@ -30,6 +30,7 @@ jobs:
             cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
             cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
             architecture: x64
+        - run: flutter pub get
         - run: flutter --version
         
   package_analysis:
@@ -59,4 +60,18 @@ jobs:
             echo Score too low!
             exit 1
           fi
+          
+  code_coverage:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+      
+      - run: flutter --version
+      - run: flutter test --coverage ./lib 
+      - run: lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
+      - run: genhtml coverage/lcov_cleaned.info --output=coverage
+      
     
