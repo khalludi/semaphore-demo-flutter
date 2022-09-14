@@ -34,6 +34,7 @@ jobs:
         - run: flutter --version
         
   package_analysis:
+    needs: install_dependencies
     
     runs-on: ubuntu-latest
     
@@ -62,6 +63,7 @@ jobs:
           fi
           
   code_coverage:
+    needs: install_dependencies
     
     runs-on: ubuntu-latest
     
@@ -74,4 +76,13 @@ jobs:
       - run: lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
       - run: genhtml coverage/lcov_cleaned.info --output=coverage
       
+  unit_widget_tests:
+    needs: [package_analysis, code_coverage]
+    runs-on: ubuntu-latest
     
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+      
+      - run: flutter --version
+      - run: flutter test test
