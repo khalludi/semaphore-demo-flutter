@@ -86,6 +86,7 @@ jobs:
       
       - run: flutter --version
       - run: flutter test --coverage ./lib 
-      - run: sudo apt-get install -y lcov genhtml
-      - run: lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
-      - run: genhtml coverage/lcov_cleaned.info --output=coverage
+      - name: Upload files to codecov
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          directory: coverage/
