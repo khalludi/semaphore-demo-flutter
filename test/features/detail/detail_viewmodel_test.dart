@@ -12,7 +12,7 @@ void main() {
     );
 
     // Act
-    detailViewModel.setDetailType(DetailPageType.add);
+    detailViewModel.detailType = DetailPageType.add;
 
     // Assert
     expect(detailViewModel.saveLabel, 'Save');
@@ -26,7 +26,7 @@ void main() {
     );
 
     // Act
-    detailViewModel.setDetailType(DetailPageType.edit);
+    detailViewModel.detailType = DetailPageType.edit;
 
     // Assert
     expect(detailViewModel.saveLabel, 'Update');
@@ -89,14 +89,14 @@ void main() {
 
     // Act
     // Save
-    detailViewModel.setDetailType(DetailPageType.add);
+    detailViewModel.detailType = DetailPageType.add;
     detailViewModel.enterTitle('This is the old title');
     detailViewModel.enterDescription('This is the ol description');
     detailViewModel.saveItem();
 
     // Edit
     final item = todoViewModel.todos.first;
-    detailViewModel.setDetailType(DetailPageType.edit);
+    detailViewModel.detailType = DetailPageType.edit;
     detailViewModel.setItemEditing(item);
     detailViewModel.enterTitle('This is the new title');
     detailViewModel.enterDescription('This is the new description');
@@ -117,7 +117,7 @@ void main() {
 
     // Act
     // Save
-    detailViewModel.setDetailType(DetailPageType.add);
+    detailViewModel.detailType = DetailPageType.add;
     detailViewModel.enterTitle('This is the old title');
     detailViewModel.enterDescription('This is the ol description');
     detailViewModel.saveItem();
