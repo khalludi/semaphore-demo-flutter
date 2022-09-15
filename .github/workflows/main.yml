@@ -50,9 +50,27 @@ jobs:
         - run: flutter pub get
         - run: dart format lib/
         - run: dart analyze
-          
+      
+  unit_widget_tests:
+    needs: format_and_static_analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+            channel: 'stable'
+            cache: true
+            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
+            architecture: x64
+      
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter test test
+      
   code_coverage:
-    needs: install_dependencies
+    needs: unit_widget_tests
     
     runs-on: ubuntu-latest
     
@@ -68,23 +86,6 @@ jobs:
       
       - run: flutter --version
       - run: flutter test --coverage ./lib 
-      - run: apt-get install lcov genhtml
+      - run: sudo apt-get install -y lcov genhtml
       - run: lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
       - run: genhtml coverage/lcov_cleaned.info --output=coverage
-      
-  unit_widget_tests:
-    needs: [format_and_static_analysis, code_coverage]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
-        with:
-            channel: 'stable'
-            cache: true
-            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
-            architecture: x64
-      
-      - run: flutter --version
-      - run: flutter test test
