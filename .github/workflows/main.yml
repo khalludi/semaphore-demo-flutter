@@ -32,7 +32,17 @@ jobs:
             architecture: x64
         - run: flutter pub get
         - run: flutter --version
-        
+  
+  dart_analysis:
+    needs: install_dependencies
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+        - uses: actions/checkout@v3
+        - uses: subosito/flutter-action@v2
+        - run: dart analyze
+  
   package_analysis:
     needs: install_dependencies
     
