@@ -33,7 +33,7 @@ jobs:
         - run: flutter pub get
         - run: flutter --version
   
-  dart_analysis:
+  format_and_static_analysis:
     needs: install_dependencies
     runs-on: ubuntu-latest
 
@@ -48,36 +48,8 @@ jobs:
             cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
             architecture: x64
         - run: flutter pub get
+        - run: dart format lib/
         - run: dart analyze
-  
-  package_analysis:
-    needs: install_dependencies
-    
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: axel-op/dart-package-analyzer@v3
-        # set an id for the current step
-        id: analysis
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      # You can then use this id to retrieve the outputs in the next steps.
-      # The following step shows how to exit the workflow with an error if the total score in percentage is below 50:
-      - name: Check scores
-        env:
-          # NB: "analysis" is the id set above. Replace it with the one you used if different.
-          TOTAL: ${{ steps.analysis.outputs.total }}
-          TOTAL_MAX: ${{ steps.analysis.outputs.total_max }}
-        run: |
-          PERCENTAGE=$(( $TOTAL * 100 / $TOTAL_MAX ))
-          if (( $PERCENTAGE < 50 ))
-          then
-            echo Score too low!
-            exit 1
-          fi
           
   code_coverage:
     needs: install_dependencies
@@ -96,11 +68,12 @@ jobs:
       
       - run: flutter --version
       - run: flutter test --coverage ./lib 
+      - run: apt-get install lcov genhtml
       - run: lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
       - run: genhtml coverage/lcov_cleaned.info --output=coverage
       
   unit_widget_tests:
-    needs: [package_analysis, code_coverage]
+    needs: [format_and_static_analysis, code_coverage]
     runs-on: ubuntu-latest
     
     steps:
