@@ -40,7 +40,11 @@ class DetailViewModel extends ChangeNotifier {
     if (!_isDisposed) notifyListeners();
   }
 
-  void setDetailType(DetailPageType type) {
+  DetailPageType get detailType {
+    return type;
+  }
+
+  set detailType(DetailPageType type) {
     this.type = type;
   }
 
