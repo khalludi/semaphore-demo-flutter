@@ -56,10 +56,10 @@ class _DetailPageState extends State<DetailPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.type == DetailPageType.edit) {
-          _detailViewModel.setItemEditing(widget.item!);
+        _detailViewModel.setItemEditing(widget.item!);
 
-          _titleController.text = widget.item!.title;
-          _descriptionController.text = widget.item!.description;
+        _titleController.text = widget.item!.title;
+        _descriptionController.text = widget.item!.description;
       }
     });
 
@@ -140,16 +140,19 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ),
               ),
-              if (widget.type == DetailPageType.edit) TextButton(
-                      key: const ValueKey('button.delete'),
-                      child: const Text(
-                        'Delete',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
-                      onPressed: _deleteItem,
-                    ) else Container(),
+              if (widget.type == DetailPageType.edit)
+                TextButton(
+                  key: const ValueKey('button.delete'),
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                  onPressed: _deleteItem,
+                )
+              else
+                Container(),
             ],
           ),
         ),
