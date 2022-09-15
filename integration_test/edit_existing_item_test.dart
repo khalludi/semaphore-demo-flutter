@@ -4,12 +4,13 @@ import 'package:integration_test/integration_test.dart';
 import 'package:semaphoreci_flutter_demo/main.dart' as app;
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets(
     'Should display the newly updated item in the list',
     (WidgetTester tester) async {
       // Arrange
+      binding.testTextInput.register();
       app.main();
       await tester.pumpAndSettle();
       final addFinder = find.byKey(const ValueKey('button.add'));
