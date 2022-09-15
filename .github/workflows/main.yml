@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
       
-  android_integration_tests:
+  android_integration_test_setup:
     runs-on: macos-11
     strategy:
       matrix:
@@ -57,6 +57,37 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
+      
+  android_integration_test:
+    needs: android_integration_test_setup
+    runs-on: macos-11
+    strategy:
+      matrix:
+        api-level:
+          - 32
+          # you can add more API level if you want to run your tests on different API
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+            channel: 'stable'
+            cache: true
+            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
+            architecture: x64
+      - name: Install Flutter dependencies
+        run: flutter pub get
+        
+      - name: AVD cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
       
       - name: Run integration tests
         # more info on https://github.com/ReactiveCircus/android-emulator-runner
