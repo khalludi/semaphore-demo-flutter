@@ -36,6 +36,8 @@ jobs:
             architecture: x64
       - name: Install Flutter dependencies
         run: flutter pub get
+      
+      - run: sdkmanager --list --verbose
         
       - name: AVD cache
         uses: actions/cache@v3
@@ -51,5 +53,5 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          arch: x86_64
+          arch: arm
           script: flutter test integration_test --verbose
