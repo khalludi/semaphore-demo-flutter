@@ -41,6 +41,13 @@ jobs:
     steps:
         - uses: actions/checkout@v3
         - uses: subosito/flutter-action@v2
+          with:
+            channel: 'stable'
+            cache: true
+            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
+            architecture: x64
+        - run: flutter pub get
         - run: dart analyze
   
   package_analysis:
@@ -80,6 +87,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2
+        with:
+            channel: 'stable'
+            cache: true
+            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
+            architecture: x64
       
       - run: flutter --version
       - run: flutter test --coverage ./lib 
@@ -93,6 +106,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2
+        with:
+            channel: 'stable'
+            cache: true
+            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
+            architecture: x64
       
       - run: flutter --version
       - run: flutter test test
