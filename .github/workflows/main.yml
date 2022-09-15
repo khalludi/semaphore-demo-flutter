@@ -15,28 +15,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  format_lint_unit_tests:
-    # The type of runner that the job will run on
-    runs-on: macos-11
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-        - uses: actions/checkout@v3
-        - uses: subosito/flutter-action@v2
-          with:
-            channel: 'stable'
-            cache: true
-            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
-            architecture: x64
-        - run: flutter pub get
-        - run: flutter format --set-exit-if-changed .
-        - run: flutter analyze .
-        - run: flutter test test
       
   android_integration_tests:
-    needs: format_lint_unit_tests
     runs-on: macos-11
     strategy:
       matrix:
@@ -73,25 +53,3 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           script: flutter test integration_test --verbose
-      
-  code_coverage:
-    needs: format_lint_unit_tests
-    
-    runs-on: macos-11
-    
-    steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
-        with:
-            channel: 'stable'
-            cache: true
-            cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-            cache-path: ${{ runner.tool_cache }}/flutter/':channel:-:version:-:arch:' # optional, change this to specify the cache path
-            architecture: x64
-      
-      - run: flutter --version
-      - run: flutter test --coverage ./lib 
-      - name: Upload files to codecov
-        uses: codecov/codecov-action@v3.1.0
-        with:
-          directory: coverage/
